@@ -2,6 +2,11 @@
 // Incluir el archivo de autenticación
 require_once 'auth.php';
 
+if (isset($_GET['cerrar_sesion'])) {
+    cerrar_sesion();
+    exit();
+}
+
 // Verificar la autenticación utilizando las cookies de usuario y contraseña
 if (verificar()) {
     // Usuario autenticado, mostrar el contenido de la página principal
@@ -46,11 +51,16 @@ if (verificar()) {
 </head>
 <body>
 
-<div class="navbar">
-    <a href="altas.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'altas.php' ? 'selected' : ''; ?>">ALTAS</a>
-    <a href="cambios.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'cambios.php' ? 'selected' : ''; ?>">CAMBIOS</a>
-    <a href="consultas.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'consultas.php' ? 'selected' : ''; ?>">CONSULTAS</a>
-    <a href="descargas.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'descargas.php' ? 'selected' : ''; ?>">DESCARGAS</a>
+<div class="navbar" style="display: flex; justify-content: space-between;">
+    <div style="display: flex; align-items: center;">
+        <a href="altas.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'altas.php' ? 'selected' : ''; ?>">ALTAS</a>
+        <a href="cambios.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'cambios.php' ? 'selected' : ''; ?>">CAMBIOS</a>
+        <a href="consultas.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'consultas.php' ? 'selected' : ''; ?>">CONSULTAS</a>
+        <a href="descargas.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'descargas.php' ? 'selected' : ''; ?>">DESCARGAS</a>
+    </div>
+    <div>
+        <a href="?cerrar_sesion">Cerrar Sesión</a>
+    </div>
 </div>
 
 <h1 style="text-align: center;">Bienvenido a la página de CAMBIOS</h1>

@@ -90,6 +90,9 @@
                     case 2:
                         echo '<label id="auth">CREDENCIALES EXPIRADAS</label>';
                         break;
+                    case 3:
+                        echo '<label id="auth">SESIÓN CERRADA</label>';
+                        break;
                     default:
                         echo '<label id="auth">ERROR DESCONOCIDO</label>';
                         break;

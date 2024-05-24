@@ -1,5 +1,16 @@
 <?php
 // Función para realizar la autenticación
+function cerrar_sesion() {
+    // Eliminar las cookies de sesión
+    setcookie("session", "", time() - 60 * 5);
+    setcookie("user", "", time() - 60 * 5);
+    setcookie("pass", "", time() - 60 * 5);
+    
+    // Redirigir al usuario a la página de inicio de sesión después de eliminar las cookies
+    header("Location: index.php?auth=3");
+    exit();
+}
+
 function autenticar($username, $password) {
     // Datos para la conexión a la BD
     $servername = "localhost";
