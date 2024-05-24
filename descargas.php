@@ -2,6 +2,11 @@
 // Incluir el archivo de autenticación
 require_once 'auth.php';
 
+if (isset($_GET['cerrar_sesion'])) {
+    cerrar_sesion();
+    exit();
+}
+
 // Verificar la autenticación utilizando las cookies de usuario y contraseña
 if (verificar()) {
     // Usuario autenticado, mostrar el contenido de la página principal
@@ -12,6 +17,7 @@ if (verificar()) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -44,19 +50,21 @@ if (verificar()) {
         }
 
         .content {
-            margin: 20px;
-            text-align: center;
+            margin: 20px auto;
+            width: 90%;
+            display: flex;
+            justify-content: space-between;
         }
 
         table {
-            width: 90%;
-            margin: 0 auto;
+            width: 30%;
             border-collapse: collapse;
         }
 
         th, td {
             border: 1px solid #ddd;
-            padding: 8px;
+            padding: 6px; /* Ajustar el padding */
+            text-align: center;
         }
 
         th {
@@ -64,40 +72,64 @@ if (verificar()) {
         }
 
         .download-btn {
+            background-color: #008CBA;
+            color: white;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            border-radius: 5px;
+            margin-right: 5px;
+        }
+
+        .show-pdf-btn {
             background-color: #4CAF50;
             color: white;
-            padding: 10px 15px;
+            padding: 5px 10px;
             text-align: center;
             text-decoration: none;
             display: inline-block;
             border-radius: 5px;
         }
 
-        .download-btn:hover {
-            background-color: #45a049;
+        #pdf-container {
+            width: 65%;
+            max-height: 600px; /* Altura máxima del contenedor */
+            overflow: auto; /* Agregar barra de desplazamiento si el PDF es demasiado grande */
+            border: 1px solid #ddd;
+            padding: 20px;
+        }
+
+        #pdf-container embed {
+            width: 100%;
+            height: 100%; /* Ajustar el tamaño del PDF al contenedor */
+        }
+
+        /* Reducir el tamaño de la fuente de los ensayos */
+        .essay-name {
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
 
-<div class="navbar">
-    <a href="altas.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'altas.php' ? 'selected' : ''; ?>">ALTAS</a>
-    <a href="cambios.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'cambios.php' ? 'selected' : ''; ?>">CAMBIOS</a>
-    <a href="consultas.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'consultas.php' ? 'selected' : ''; ?>">CONSULTAS</a>
-    <a href="descargas.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'descargas.php' ? 'selected' : ''; ?>">DESCARGAS</a>
+<div class="navbar" style="display: flex; justify-content: space-between;">
+    <div style="display: flex; align-items: center;">
+        <a href="altas.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'altas.php' ? 'selected' : ''; ?>">ALTAS</a>
+        <a href="cambios.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'cambios.php' ? 'selected' : ''; ?>">CAMBIOS</a>
+        <a href="consultas.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'consultas.php' ? 'selected' : ''; ?>">CONSULTAS</a>
+        <a href="descargas.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'descargas.php' ? 'selected' : ''; ?>">DESCARGAS</a>
+    </div>
+    <div>
+        <a href="?cerrar_sesion">Cerrar Sesión</a>
+    </div>
 </div>
-
-<h1 style="text-align: center;">Bienvenido a la página de DESCARGAS</h1>
 
 <div class="content">
     <table>
         <tr>
-            <th>Nombre del Archivo</th>
-            <th>Descripción</th>
-            <th>Descargar</th>
-            <th>Nombre del Archivo</th>
-            <th>Descripción</th>
-            <th>Descargar</th>
+            <th>Nombre del Ensayo</th>
+            <th>Acciones</th>
         </tr>
         <?php
         $path = './Ensayos';
@@ -110,62 +142,26 @@ if (verificar()) {
 
         natsort($files);
 
-        // Array de descripciones personalizadas
-        $descriptions = [
-            'ensayo 1 - c.c.pdf' => 'Computo en la Nube, brecha digital y redundancia en la nube',
-            'ensayo 2 - c.c.pdf' => 'Introducción a la nube, sitios web en la nube',
-            'ensayo 3 - c.c.pdf' => 'Introducción a la nube de AWS, construcción en la nube y conexiones',
-            'ensayo 4 - c.c.pdf' => 'Uso de la cube, conexiones en la nube y el poder del computo virtual',
-            'ensayo 5 - c.c.pdf' => 'Almacenamiento en la nube, algoritmos, diseño de programas e introducción al computo',
-            'ensayo 6 - c.c.pdf' => 'Seguridad de datos, programación y variables',
-            'ensayo 7 - c.c.pdf' => 'Modelos de datos, transformación de datos y trabajar con datos de usuario',
-            'ensayo 8 - c.c.pdf' => 'Privacidad en línea, impacto global y realidad virtual',
-            'ensayo 9 - c.c.pdf' => 'Análisis de datos, datos masivos e introducción al computo',
-            'ensayo 10 - c.c.pdf' => 'Introducción a bases de datos, ciberseguridad y protegiendo la nube',
-            'ensayo 11 - c.c.pdf' => 'Estableciendo redes e introducción a servicios sin servidor',
-            'ensayo 12 - c.c.pdf' => 'Introducción a Amazon CodeWhisperer y su uso',
-            'ensayo 13 - c.c.pdf' => 'Inteligencia artificial e introducción a la inteligencia artificial generativa',
-            'ensayo 14 - c.c.pdf' => 'Machine learning'
-        ];
-
-        // Dividir los archivos en dos columnas
-        $totalFiles = count($files);
-        $half = ceil($totalFiles / 2);
-        $files = array_values($files);
-
-        for ($i = 0; $i < $half; $i++) {
+        foreach ($files as $file) {
             echo '<tr>';
-            // Primera columna
-            if (isset($files[$i])) {
-                $file1 = $files[$i];
-                $filePath1 = $path . '/' . $file1;
-                $normalizedFile1 = strtolower(trim($file1));
-                $description1 = isset($descriptions[$normalizedFile1]) ? $descriptions[$normalizedFile1] : 'Descripción no disponible';
-                echo '<td>' . $file1 . '</td>';
-                echo '<td>' . $description1 . '</td>';
-                echo '<td><a href="' . $filePath1 . '" download class="download-btn">Descargar</a></td>';
-            } else {
-                echo '<td colspan="3"></td>';
-            }
-            
-            // Segunda columna
-            if (isset($files[$i + $half])) {
-                $file2 = $files[$i + $half];
-                $filePath2 = $path . '/' . $file2;
-                $normalizedFile2 = strtolower(trim($file2));
-                $description2 = isset($descriptions[$normalizedFile2]) ? $descriptions[$normalizedFile2] : 'Descripción no disponible';
-                echo '<td>' . $file2 . '</td>';
-                echo '<td>' . $description2 . '</td>';
-                echo '<td><a href="' . $filePath2 . '" download class="download-btn">Descargar</a></td>';
-            } else {
-                echo '<td colspan="3"></td>';
-            }
-
+            $filePath = $path . '/' . $file;
+            echo '<td class="essay-name">' . $file . '</td>'; // Agregar la clase "essay-name"
+            echo '<td><a href="' . $filePath . '" class="download-btn" download><i class="fas fa-download"></i></a>';
+            echo '<a href="#" class="show-pdf-btn" onclick="mostrarPDF(\'' . $filePath . '\')"><i class="far fa-eye"></i></a></td>';
             echo '</tr>';
         }
         ?>
     </table>
+
+    <div id="pdf-container"></div>
 </div>
+
+<script>
+    function mostrarPDF(filePath) {
+        // Mostrar el PDF embebido en el contenedor
+        document.getElementById('pdf-container').innerHTML = '<embed src="' + filePath + '" type="application/pdf" />';
+    }
+</script>
 
 </body>
 </html>
