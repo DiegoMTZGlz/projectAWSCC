@@ -1,5 +1,5 @@
 <?php
-include 'config.php'; // Incluir el archivo config.php para obtener la clave secreta
+include 'config.php';
 
 // Verificar si se enviaron datos de usuario y contraseña
 if(isset($_POST['username']) && isset($_POST['password'])) {

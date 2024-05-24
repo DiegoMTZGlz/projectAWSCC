@@ -1,8 +1,9 @@
 <?php
-// config.php
+
 $secret_key = "cloudcomputing";
-$servername = "localhost"; // Puedes cambiar esto si tu servidor MySQL está en otro lugar
-$username = "root"; // Nombre de usuario de la base de datos
-$password = ""; // Contraseña de la base de datos
-$dbname = "proyjd"; // Nombre de la base de datos
+$servername = "localhost"; // Host de la BD
+$username = "root"; // Nombre de usuario de la BD
+$password = ""; // Contraseña de la BD
+$dbname = "proyjd"; // Nombre de la BD
+
 ?>
