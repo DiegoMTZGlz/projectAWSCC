@@ -1,15 +1,13 @@
 <?php
-// Incluir el archivo de autenticación
-require_once 'auth.php';
+
+include 'functions.php';
+verificar_sesion();
 
 if (isset($_GET['cerrar_sesion'])) {
     cerrar_sesion();
     exit();
 }
 
-// Verificar la autenticación utilizando las cookies de usuario y contraseña
-if (verificar()) {
-    // Usuario autenticado, mostrar el contenido de la página principal
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -42,12 +40,18 @@ if (verificar()) {
             background-color: #ddd;
             color: #333;
         }
+
+        .navbar a.selected {
+            background-color: #555;
+            color: #fff; 
+        }
     </style>
 </head>
 <body>
 
 <div class="navbar" style="display: flex; justify-content: space-between;">
     <div style="display: flex; align-items: center;">
+        <a href="main.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'main.php' ? 'selected' : ''; ?>">INICIO</a>
         <a href="altas.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'altas.php' ? 'selected' : ''; ?>">ALTAS</a>
         <a href="cambios.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'cambios.php' ? 'selected' : ''; ?>">CAMBIOS</a>
         <a href="consultas.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'consultas.php' ? 'selected' : ''; ?>">CONSULTAS</a>
@@ -58,17 +62,7 @@ if (verificar()) {
     </div>
 </div>
 
-<h1 style="text-align: center;">Bienvenido a la página principal</h1>
+<h1 style="text-align: center;">Bienvenido a la página PRINCIPAL</h1>
 
 </body>
 </html>
-<?php
-} else {
-    // Usuario no autenticado, redirigir al usuario a la página de inicio de sesión
-    header("Location: index.php?auth=2");
-    setcookie("session", "", time() - 60 * 5);
-    setcookie("user", "", time() - 60 * 5);
-    setcookie("pass", "", time() - 60 * 5);
-    exit();
-}
-?>
