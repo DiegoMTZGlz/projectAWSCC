@@ -33,7 +33,7 @@ if (isset($_GET['cerrar_sesion'])) {
     </div>
 </div>
 
-<h1 style="text-align: center;">Bienvenido a la página PRINCIPAL</h1>
+<h1 style="text-align: center;">Bienvenido a la página de ALTAS</h1>
 
 </body>
 </html>

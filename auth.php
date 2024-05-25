@@ -1,19 +1,16 @@
 <?php
-include 'config.php';
+include 'conexion.php'; // Archivo de conexión a la base de datos
 
 // Verificar si se enviaron datos de usuario y contraseña
 if(isset($_POST['username']) && isset($_POST['password'])) {
 
-    // Crear conexión utilizando consultas preparadas para evitar la inyección SQL
-    $conn = new mysqli($servername, $username, $password, $dbname);
-
-    // Verificar la conexión
-    if ($conn->connect_error) {
-        die("Conexión fallida: " . $conn->connect_error);
+    // Verifica la conexión
+    if ($conexion->connect_error) {
+        die("Conexión fallida: " . $conexion->connect_error);
     }
 
     // Preparar la consulta utilizando consultas preparadas
-    $stmt = $conn->prepare("SELECT password FROM login WHERE username=?");
+    $stmt = $conexion->prepare("SELECT password FROM login WHERE username=?");
     $stmt->bind_param("s", $_POST['username']);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -25,14 +22,14 @@ if(isset($_POST['username']) && isset($_POST['password'])) {
 
         // Verificar si la contraseña ingresada coincide con la contraseña almacenada en la base de datos
         if (password_verify($_POST['password'], $password_hash_db)) {
-            // Credenciales correctas, crear cookies de sesión firmadas
+            // Si las credenciales correctas, crear cookies de sesión firmadas
             $cookie_data = array(
                 'usuario' => $_POST['username'],
                 'tiempo' => time()
             );
             $cookie = base64_encode(json_encode($cookie_data));
             $cookie_signature = hash_hmac('sha256', $cookie, $secret_key);
-            setcookie('session_cookie', $cookie . '|' . $cookie_signature, time() + (60 * 10), "/");
+            setcookie('session_cookie', $cookie . '|' . $cookie_signature, time() + (60 * 20), "/");
             
             // Redirigir a la página de inicio de sesión exitosa
             header("Location: main.php");
@@ -49,7 +46,7 @@ if(isset($_POST['username']) && isset($_POST['password'])) {
     }
 
     // Cerrar la conexión a la base de datos
-    $conn->close();
+    $conexion->close();
 } else {
     // Si no se enviaron datos de usuario y contraseña, redirigir a index.php
     header("Location: index.php");

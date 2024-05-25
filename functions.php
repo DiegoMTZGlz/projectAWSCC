@@ -1,5 +1,45 @@
 <?php
 include 'config.php';
+include 'conexion.php';
+
+// Función para agregar un usuario a la base de datos
+function agregarUsuario($usuario, $password) {
+    global $conexion; // Accede a la conexión a la base de datos definida en conexion.php
+
+    // Verificar si el usuario ya existe en la base de datos
+    if (existeUsuario($usuario)) {
+        return "El usuario ya existe.";
+    } else {
+        // Hash de la contraseña
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+        // Preparar la consulta para insertar el usuario en la base de datos
+        $stmt = $conexion->prepare("INSERT INTO login (username, password) VALUES (?, ?)");
+        $stmt->bind_param("ss", $usuario, $hashed_password);
+
+        // Ejecutar la consulta
+        if ($stmt->execute()) {
+            return "Usuario agregado correctamente.";
+        } else {
+            return "Error al agregar el usuario.";
+        }
+    }
+}
+
+// Función para verificar si un usuario ya existe en la base de datos
+function existeUsuario($usuario) {
+    global $conexion; // Accede a la conexión a la base de datos definida en conexion.php
+
+    // Preparar la consulta para verificar si el usuario existe en la base de datos
+    $stmt = $conexion->prepare("SELECT username FROM login WHERE username = ?");
+    $stmt->bind_param("s", $usuario);
+    $stmt->execute();
+    $stmt->store_result();
+
+    // Devolver true si el usuario existe, false si no existe
+    return $stmt->num_rows > 0;
+}
+
 function cerrar_sesion() {
     // Eliminar las cookies de sesión
     setcookie("session_cookie", "", time() - 60 * 5);
@@ -25,7 +65,7 @@ function verificar_sesion() {
             // Decodificar los datos de la cookie
             $cookie_data = json_decode(base64_decode($cookie_data), true);
             
-            // Verificar si la sesión ha expirado (por ejemplo, si ha pasado más de una hora)
+            // Verificar si la sesión ha expirado
             if(time() - $cookie_data['tiempo'] > 3600) {
                 // La sesión ha expirado, eliminar la cookie y redirigir al usuario al inicio de sesión
                 setcookie('session_cookie', '', time() - 3600, '/');
