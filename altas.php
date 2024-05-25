@@ -39,12 +39,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['agregar_curso'])) {
 
     // Intentar agregar el curso
     $mensaje_curso = agregarCurso($nombre_curso, $descripcion_curso, $instructor_curso, $duracion_horas, $duracion_minutos, $categoria_curso, $tipo_curso);
-    if ($mensaje_curso == "El curso '$nombre_curso' ha sido agregado correctamente.") {
-        // Si el curso se agregó correctamente, redirigimos para evitar reenvío del formulario
-        header("Location: refrescaraltas.php");
-        exit();
-    }
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -111,7 +107,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['agregar_curso'])) {
                 <label for="descripcion_curso">DESCRIPCIÓN</label><br>
                 <textarea name="descripcion_curso" rows="4" cols="50" required></textarea><br><br>
                 <label for="instructor_curso">INSTRUCTOR</label><br>
-                <input type="text" name="instructor_curso" required><br><br>
+                <input type="text" name="instructor_curso" required pattern="[A-Za-z\s]+" title="Solo se permiten letras y espacios"><br><br>
                 <label for="categoria_curso">CATEGORÍA:</label><br>
                 <select name="categoria_curso" required>
                     <option value="programacion">Programación</option>
@@ -127,7 +123,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['agregar_curso'])) {
                 <label>DURACIÓN</label><br>
                 <select name="duracion_horas" required>
                     <?php
-                    for ($i = 0; $i <= 24; $i++) {
+                    for ($i = 1; $i <= 24; $i++) {
                         echo "<option value='$i'>$i horas</option>";
                     }
                     ?>
@@ -143,7 +139,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['agregar_curso'])) {
             </div>
         </form>
     </div>
-</div>
 
 <!-- Script para mostrar mensajes -->
 <script>
