@@ -2,6 +2,27 @@
 include 'config.php';
 include 'conexion.php';
 
+// Función para agregar un curso a la base de datos
+function agregarCurso($titulo, $descripcion, $instructor, $duracion_horas, $duracion_minutos, $categoria, $tipo) {
+    global $conexion;
+
+    // Preparar la consulta para insertar el curso en la tabla
+    $stmt = $conexion->prepare("INSERT INTO cursos (titulo, descripcion, instructor, duracion_horas, duracion_minutos, categoria, tipo) VALUES (?, ?, ?, ?, ?, ?, ?)");
+
+    // Vincular los parámetros de la consulta
+    $stmt->bind_param("sssiiss", $titulo, $descripcion, $instructor, $duracion_horas, $duracion_minutos, $categoria, $tipo);
+
+    // Ejecutar la consulta
+    if ($stmt->execute()) {
+        return "El curso '$titulo' ha sido agregado correctamente.";
+    } else {
+        return "Error al agregar el curso: " . $conexion->error;
+    }
+
+    // Cerrar la consulta
+    $stmt->close();
+}
+
 // Función para agregar un usuario a la base de datos
 function agregarUsuario($usuario, $password) {
     global $conexion; // Accede a la conexión a la base de datos definida en conexion.php
@@ -28,7 +49,7 @@ function agregarUsuario($usuario, $password) {
 
 // Función para verificar si un usuario ya existe en la base de datos
 function existeUsuario($usuario) {
-    global $conexion; // Accede a la conexión a la base de datos definida en conexion.php
+    global $conexion;
 
     // Preparar la consulta para verificar si el usuario existe en la base de datos
     $stmt = $conexion->prepare("SELECT username FROM login WHERE username = ?");

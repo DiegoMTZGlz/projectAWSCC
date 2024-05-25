@@ -1,5 +1,4 @@
 <?php
-
 include 'functions.php';
 verificar_sesion();
 
@@ -7,6 +6,9 @@ if (isset($_GET['cerrar_sesion'])) {
     cerrar_sesion();
     exit();
 }
+
+$mensaje_usuario = '';
+$mensaje_curso = '';
 
 // Verificar si se ha enviado el formulario de alta de usuario
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['agregar_usuario'])) {
@@ -18,16 +20,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['agregar_usuario'])) {
     // Verificar si las contraseñas coinciden
     if ($password === $confirmar_password) {
         // Intentar agregar el usuario
-        $mensaje = agregarUsuario($usuario, $password);
-        echo "<script>alert('$mensaje');</script>";
-        // Redirigir a otra página después de procesar el formulario
-        header("Location: altas.php");
-        exit();
+        $mensaje_usuario = agregarUsuario($usuario, $password); // Guardamos el mensaje de retorno
     } else {
-        echo "<script>alert('Las contraseñas no coinciden');</script>";
+        $mensaje_usuario = "Las contraseñas no coinciden";
     }
 }
 
+// Verificar si se ha enviado el formulario de alta de curso
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['agregar_curso'])) {
+    // Obtener los datos del formulario
+    $nombre_curso = $_POST['nombre_curso'];
+    $descripcion_curso = $_POST['descripcion_curso'];
+    $instructor_curso = $_POST['instructor_curso'];
+    $categoria_curso = $_POST['categoria_curso'];
+    $tipo_curso = $_POST['tipo_curso'];
+    $duracion_horas = $_POST['duracion_horas'];
+    $duracion_minutos = $_POST['duracion_minutos'];
+
+    // Intentar agregar el curso
+    $mensaje_curso = agregarCurso($nombre_curso, $descripcion_curso, $instructor_curso, $duracion_horas, $duracion_minutos, $categoria_curso, $tipo_curso);
+    if ($mensaje_curso == "El curso '$nombre_curso' ha sido agregado correctamente.") {
+        // Si el curso se agregó correctamente, redirigimos para evitar reenvío del formulario
+        header("Location: refrescaraltas.php");
+        exit();
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -61,7 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['agregar_usuario'])) {
     <button onclick="mostrarModalCurso()">DAR ALTA CURSO</button>
 </div>
 
-<!-- Modal para dar de alta usuario -->
+<!-- Modulo para dar de alta usuarios -->
 <div id="modalUsuario" class="modal">
     <div class="modal-content">
         <span class="close" onclick="cerrarModalUsuario()">&times;</span>
@@ -82,6 +99,64 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['agregar_usuario'])) {
     </div>
 </div>
 
+<!-- Modulo para dar de alta cursos -->
+<div id="modalCurso" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="cerrarModalCurso()">&times;</span>
+        <h2 style="text-align: center;">&nbsp;&nbsp;Alta de Curso</h2>
+        <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+            <div class="agregarcurso" style="text-align: center;">
+                <label for="nombre_curso">CURSO</label><br>
+                <input type="text" name="nombre_curso" required><br><br>
+                <label for="descripcion_curso">DESCRIPCIÓN</label><br>
+                <textarea name="descripcion_curso" rows="4" cols="50" required></textarea><br><br>
+                <label for="instructor_curso">INSTRUCTOR</label><br>
+                <input type="text" name="instructor_curso" required><br><br>
+                <label for="categoria_curso">CATEGORÍA:</label><br>
+                <select name="categoria_curso" required>
+                    <option value="programacion">Programación</option>
+                    <option value="diseño">Diseño</option>
+                    <option value="marketing">Marketing</option>
+                    <!-- Agrega más opciones según tus necesidades -->
+                </select><br><br>
+                <label for="tipo_curso">TIPO</label><br>
+                <select name="tipo_curso" required>
+                    <option value="presencial">Presencial</option>
+                    <option value="virtual">Virtual</option>
+                </select><br><br>
+                <label>DURACIÓN</label><br>
+                <select name="duracion_horas" required>
+                    <?php
+                    for ($i = 0; $i <= 24; $i++) {
+                        echo "<option value='$i'>$i horas</option>";
+                    }
+                    ?>
+                </select>
+                <select name="duracion_minutos" required>
+                    <?php
+                    for ($i = 0; $i <= 59; $i++) {
+                        echo "<option value='$i'>$i minutos</option>";
+                    }
+                    ?>
+                </select><br><br>
+                <button class="btn-dar-alta" type="submit" name="agregar_curso">AGREGAR CURSO</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Script para mostrar mensajes -->
+<script>
+    <?php if (!empty($mensaje_usuario)) { ?>
+        alert("<?php echo $mensaje_usuario; ?>");
+    <?php } ?>
+
+    <?php if (!empty($mensaje_curso)) { ?>
+        alert("<?php echo $mensaje_curso; ?>");
+    <?php } ?>
+</script>
+
+<!-- Script para mostrar los formularios de altas -->
 <script>
     // Mostrar ventana para agregar usuario
     function mostrarModalUsuario() {
@@ -92,6 +167,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['agregar_usuario'])) {
     function cerrarModalUsuario() {
         document.getElementById('modalUsuario').style.display = 'none';
     }
+
+    // Mostrar ventana para agregar curso
+    function mostrarModalCurso() {
+        document.getElementById('modalCurso').style.display = 'block';
+    }
+
+    // Cerrar ventana para agregar curso
+    function cerrarModalCurso() {
+        document.getElementById('modalCurso').style.display = 'none';
+    }    
 </script>
 
 </body>

@@ -117,7 +117,7 @@ body {
     color:#000000
 }
 
-.agregaruser input{
+.agregaruser input, .agregarcurso input{
     text-align: center;
     margin-bottom: auto;
 }
