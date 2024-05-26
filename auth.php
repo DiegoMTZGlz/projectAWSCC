@@ -31,6 +31,9 @@ if(isset($_POST['username']) && isset($_POST['password'])) {
             $cookie_signature = hash_hmac('sha256', $cookie, $secret_key);
             setcookie('session_cookie', $cookie . '|' . $cookie_signature, time() + (60 * 20), "/");
             
+            // Crear una cookie adicional para el nombre de usuario
+            setcookie('username_cookie', $_POST['username'], time() + (60 * 20), "/");
+            
             // Redirigir a la página de inicio de sesión exitosa
             header("Location: main.php");
             exit();

@@ -66,19 +66,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['agregar_curso'])) {
     </div>
 </div>
 
-<h1 style="text-align: center;">Bienvenido a la página de ALTAS</h1>
+<h1 style="text-align: center;">ALTAS</h1>
 
 <!-- Botones para abrir el modal de alta de usuario y curso -->
 <div class="modal-buttons">
-    <button class="btn-dar-alta" onclick="mostrarModalUsuario()">DAR ALTA USUARIO</button>
-    <button onclick="mostrarModalCurso()">DAR ALTA CURSO</button>
+    <button class="btn-dar-alta" onclick="mostrarModalUsuario()">AGREGAR USUARIO</button>
+    <button onclick="mostrarModalCurso()">AGREGAR CURSO</button>
 </div>
 
 <!-- Modulo para dar de alta usuarios -->
 <div id="modalUsuario" class="modal">
     <div class="modal-content">
         <span class="close" onclick="cerrarModalUsuario()">&times;</span>
-        <h2 class="modal-title">&nbsp;&nbsp;&nbsp;Alta de Usuario</h2>
+        <h2 class="modal-title">&nbsp;&nbsp;&nbsp;AGREGAR USUARIO</h2>
         <hr>
         <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
             <div class="agregaruser" style="text-align: center;">
@@ -99,9 +99,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['agregar_curso'])) {
 <div id="modalCurso" class="modal">
     <div class="modal-content">
         <span class="close" onclick="cerrarModalCurso()">&times;</span>
-        <h2 style="text-align: center;">&nbsp;&nbsp;Alta de Curso</h2>
+        <h2 style="text-align: center;">&nbsp;&nbsp;AGREGAR CURSO</h2>
+        <hr>
         <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
             <div class="agregarcurso" style="text-align: center;">
+                <br>
                 <label for="nombre_curso">CURSO</label><br>
                 <input type="text" name="nombre_curso" required><br><br>
                 <label for="descripcion_curso">DESCRIPCIÓN</label><br>
@@ -124,13 +126,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['agregar_curso'])) {
                 <select name="duracion_horas" required>
                     <?php
                     for ($i = 1; $i <= 24; $i++) {
-                        echo "<option value='$i'>$i horas</option>";
+                        if ($i == 1) {
+                            echo "<option value='$i'>$i hora</option>";
+                        } else {
+                            echo "<option value='$i'>$i horas</option>";
+                        }
                     }
                     ?>
                 </select>
                 <select name="duracion_minutos" required>
                     <?php
-                    for ($i = 0; $i <= 59; $i++) {
+                    for ($i = 0; $i <= 59; $i+=10) {
                         echo "<option value='$i'>$i minutos</option>";
                     }
                     ?>
@@ -139,6 +145,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['agregar_curso'])) {
             </div>
         </form>
     </div>
+</div>
 
 <!-- Script para mostrar mensajes -->
 <script>

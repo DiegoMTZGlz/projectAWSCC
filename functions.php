@@ -2,6 +2,17 @@
 include 'config.php';
 include 'conexion.php';
 
+function cerrar_sesion() {
+    // Eliminar la cookie de sesión
+    setcookie('session_cookie', '', time() - 3600, "/");
+    
+    // Eliminar la cookie del nombre de usuario
+    setcookie('username_cookie', '', time() - 3600, "/");
+
+    header("Location: index.php?auth=3");
+    exit();
+}
+
 // Función para agregar un curso a la base de datos
 function agregarCurso($titulo, $descripcion, $instructor, $duracion_horas, $duracion_minutos, $categoria, $tipo) {
     global $conexion;
@@ -61,15 +72,6 @@ function existeUsuario($usuario) {
     return $stmt->num_rows > 0;
 }
 
-function cerrar_sesion() {
-    // Eliminar las cookies de sesión
-    setcookie("session_cookie", "", time() - 60 * 5);
-    
-    // Redirigir al usuario a la página de inicio de sesión después de eliminar las cookies
-    header("Location: index.php?auth=3");
-    exit();
-}
-
 function verificar_sesion() {
     global $secret_key;
 
@@ -102,5 +104,71 @@ function verificar_sesion() {
     // Si no existe la cookie de sesión o si la firma no coincide, redirigir al usuario al inicio de sesión
     header("Location: index.php?auth=0");
     exit();
+}
+
+function obtenerUsuarios() {
+    global $conexion;
+    $sql = "SELECT username AS usuario FROM login";
+    $result = $conexion->query($sql);
+    $usuarios = array();
+
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $usuarios[] = $row;
+        }
+    }
+
+    return $usuarios;
+}
+
+function obtenerCursos() {
+    global $conexion;
+    $sql = "SELECT id, titulo, descripcion, instructor, duracion_horas, duracion_minutos, categoria, tipo, fecha_creacion FROM cursos";
+    $result = $conexion->query($sql);
+    $cursos = array();
+
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $cursos[] = $row;
+        }
+    }
+
+    return $cursos;
+}
+
+function eliminarUsuario($nombre_usuario) {
+    global $conexion;
+
+    // Detectar el usuario que inició sesión
+    if (isset($_COOKIE['username_cookie'])) {
+        $nombre_usuario_actual = $_COOKIE['username_cookie'];
+    } else {
+        $nombre_usuario_actual = null;
+    }
+
+    // Evitar que se elimine el usuario que inició sesión
+    if ($nombre_usuario === $nombre_usuario_actual) {
+        return "No puedes eliminar tu propio usuario.";
+    }
+
+    // Preparar la consulta para eliminar el usuario de la base de datos
+    $stmt = $conexion->prepare("DELETE FROM login WHERE username = ?");
+    $stmt->bind_param("s", $nombre_usuario);
+    if ($stmt->execute()) {
+        return "Usuario eliminado correctamente.";
+    } else {
+        return "Error al eliminar el usuario.";
+    }
+}
+
+function eliminarCurso($id_curso) {
+    global $conexion;
+    $stmt = $conexion->prepare("DELETE FROM cursos WHERE id = ?");
+    $stmt->bind_param("i", $id_curso);
+    if ($stmt->execute()) {
+        return "Curso eliminado correctamente.";
+    } else {
+        return "Error al eliminar el curso.";
+    }
 }
 ?>
