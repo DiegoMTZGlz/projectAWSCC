@@ -16,6 +16,33 @@ if (isset($_GET['cerrar_sesion'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main</title>
+    <style>
+        table {
+            border-collapse: separate;
+            border-spacing: 5px;
+            width: 80%;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        td {
+            border: 1px solid #ddd;
+            padding: 20px;
+            vertical-align: middle;
+            background-color: #f9f9f9;
+        }
+
+        img {
+            max-width: 150px;
+            height: 150px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        h1, h2 {
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
 
@@ -33,7 +60,35 @@ if (isset($_GET['cerrar_sesion'])) {
     </div>
 </div>
 
-<h1 style="text-align: center;">Bienvenido a la página PRINCIPAL</h1>
+<h1 style="text-align: center;">Proyecto AWS</h1>
+<h2 style="text-align: center;">Elaborado por Juan y Diego</h2>
+
+<table>
+    <tr>
+        <td><img src="imgs/wamp.png" alt="Imagen 1"></td>
+        <td><img src="imgs/php.png" alt="Imagen 2"></td>
+        <td><img src="imgs/phpmyadmin.png" alt="Imagen 3"></td>
+        <td><img src="imgs/mysql.png" alt="Imagen 4"></td>
+    </tr>
+    <tr>
+        <td>WAMP</td>
+        <td>PHP</td>
+        <td>PHPMyAdmin</td>
+        <td>MySQL</td>
+    </tr>
+    <tr>
+        <td><img src="imgs/html.png" alt="Imagen 5"></td>
+        <td><img src="imgs/css.png" alt="Imagen 6"></td>
+        <td><img src="imgs/aws.jpg" alt="Imagen 7"></td>
+        <td><img src="imgs/javascript.png" alt="Imagen 8"></td>
+    </tr>
+    <tr>
+        <td>HTML</td>
+        <td>CSS</td>
+        <td>AWS</td>
+        <td>JavaScript</td>
+    </tr>
+</table>
 
 </body>
 </html>
