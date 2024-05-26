@@ -86,7 +86,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['agregar_curso'])) {
             <div class="agregaruser" style="text-align: center;">
                 <br>
                 <label for="usuario">USUARIO</label><br>
-                <input type="text" name="usuario" maxlength="50" required><br><br>
+                <input type="text" name="usuario" id="usuario" maxlength="50" required oninput="validarUsuario(this)" pattern="[a-zA-Z0-9_-]+"><br><br>
                 <label for="password">CONTRASEÑA</label><br>
                 <input type="password" name="password" maxlength="60" required><br><br>
                 <label for="confirmar_password">REPETIR CONTRASEÑA</label><br>
@@ -111,22 +111,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['agregar_curso'])) {
             <div class="agregarcurso" style="text-align: center;">
                 <br>
                 <label for="nombre_curso">CURSO</label><br>
-                <input type="text" name="nombre_curso" required><br><br>
+                <input type="text" name="nombre_curso" id="nombre_curso" maxlength="40" required><br><br>
                 <label for="descripcion_curso">DESCRIPCIÓN</label><br>
                 <textarea name="descripcion_curso" rows="4" cols="50" required></textarea><br><br>
                 <label for="instructor_curso">INSTRUCTOR</label><br>
-                <input type="text" name="instructor_curso" required pattern="[A-Za-z\s]+" title="Solo se permiten letras y espacios"><br><br>
-                <label for="categoria_curso">CATEGORÍA:</label><br>
+                <input type="text" name="instructor_curso" maxlength="40" required pattern="[A-Za-z\s]+" title="Solo se permiten letras y espacios"><br><br>
+                <label for="categoria_curso">CATEGORÍA</label><br>
                 <select name="categoria_curso" required>
-                    <option value="programacion">Programación</option>
-                    <option value="diseño">Diseño</option>
-                    <option value="marketing">Marketing</option>
-                    <!-- Agrega más opciones según tus necesidades -->
+                    <option value="Programación">Programación</option>
+                    <option value="Diseño">Diseño</option>
+                    <option value="Desarrollo web">Desarrollo Web</option>
+                    <option value="Cocina">Cocina</option>
+                    <option value="Cálculo">Cálculo</option>
+                    <option value="Álgebra">Álgebra</option>
+                    <option value="Probabilidad">Probabilidad</option>
+                    <option value="Estadística">Estadística</option>
                 </select><br><br>
-                <label for="tipo_curso">TIPO</label><br>
+                <label for="tipo_curso">MODALIDAD</label><br>
                 <select name="tipo_curso" required>
-                    <option value="presencial">Presencial</option>
-                    <option value="virtual">Virtual</option>
+                    <option value="presencial">PRESENCIAL</option>
+                    <option value="virtual">VIRTUAL</option>
                 </select><br><br>
                 <label>DURACIÓN</label><br>
                 <select name="duracion_horas" required>
@@ -185,6 +189,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['agregar_curso'])) {
     function cerrarModalCurso() {
         document.getElementById('modalCurso').style.display = 'none';
     }    
+
+    function validarUsuario(input) {
+        input.setCustomValidity('');
+        var usuario = input.value.trim(); // Eliminar espacios en blanco al principio y al final
+        var usuarioValido = /^[a-zA-Z0-9_-]+$/.test(usuario); // Validar el usuario con la expresión regular
+        
+        if (!usuarioValido || usuario.includes(' ')) {
+            input.setCustomValidity('El usuario solo puede contener letras, números, guiones bajos (_) y guiones (-), sin espacios en blanco.');
+        }
+    }
 </script>
 
 </body>

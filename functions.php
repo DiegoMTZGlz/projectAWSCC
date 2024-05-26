@@ -180,4 +180,41 @@ function eliminarCurso($id_curso) {
         return "Error al eliminar el curso.";
     }
 }
+
+function actualizarUsuario($username, $nombre, $apellido, $password = null) {
+    global $conexion;
+    try {
+        $sql = "UPDATE login SET nombre = ?, apellido = ?";
+        if ($password) {
+            $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+            $sql .= ", password = ?";
+        }
+        $sql .= " WHERE username = ?";
+        
+        $stmt = $conexion->prepare($sql);
+        if ($password) {
+            $stmt->bind_param("ssss", $nombre, $apellido, $hashed_password, $username);
+        } else {
+            $stmt->bind_param("sss", $nombre, $apellido, $username);
+        }
+        $stmt->execute();
+        return "Usuario actualizado exitosamente.";
+    } catch (Exception $e) {
+        return "Error al actualizar usuario: " . $e->getMessage();
+    }
+}
+
+function actualizarCurso($id, $descripcion, $instructor, $duracion_horas, $duracion_minutos, $categoria, $tipo) {
+    global $conexion;
+    try {
+        $sql = "UPDATE cursos SET descripcion = ?, instructor = ?, duracion_horas = ?, duracion_minutos = ?, categoria = ?, tipo = ? WHERE id = ?";
+        $stmt = $conexion->prepare($sql);
+        $stmt->bind_param("ssiissi", $descripcion, $instructor, $duracion_horas, $duracion_minutos, $categoria, $tipo, $id);
+        $stmt->execute();
+        return "Curso actualizado exitosamente.";
+    } catch (Exception $e) {
+        return "Error al actualizar curso: " . $e->getMessage();
+    }
+}
+
 ?>
