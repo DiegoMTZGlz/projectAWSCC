@@ -35,7 +35,7 @@ function agregarCurso($titulo, $descripcion, $instructor, $duracion_horas, $dura
 }
 
 // Función para agregar un usuario a la base de datos
-function agregarUsuario($usuario, $password) {
+function agregarUsuario($usuario, $password, $nombre, $apellido) {
     global $conexion; // Accede a la conexión a la base de datos definida en conexion.php
 
     // Verificar si el usuario ya existe en la base de datos
@@ -46,8 +46,8 @@ function agregarUsuario($usuario, $password) {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
         // Preparar la consulta para insertar el usuario en la base de datos
-        $stmt = $conexion->prepare("INSERT INTO login (username, password) VALUES (?, ?)");
-        $stmt->bind_param("ss", $usuario, $hashed_password);
+        $stmt = $conexion->prepare("INSERT INTO login (username, password, nombre, apellido) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("ssss", $usuario, $hashed_password, $nombre, $apellido);
 
         // Ejecutar la consulta
         if ($stmt->execute()) {
@@ -91,7 +91,11 @@ function verificar_sesion() {
             // Verificar si la sesión ha expirado
             if(time() - $cookie_data['tiempo'] > 3600) {
                 // La sesión ha expirado, eliminar la cookie y redirigir al usuario al inicio de sesión
-                setcookie('session_cookie', '', time() - 3600, '/');
+                // Eliminar la cookie de sesión
+                setcookie('session_cookie', '', time() - 3600, "/");
+
+                // Eliminar la cookie del nombre de usuario
+                setcookie('username_cookie', '', time() - 3600, "/");
                 header("Location: index.php?auth=0");
                 exit();
             }
@@ -102,13 +106,18 @@ function verificar_sesion() {
     }
 
     // Si no existe la cookie de sesión o si la firma no coincide, redirigir al usuario al inicio de sesión
+    // Eliminar la cookie de sesión
+    setcookie('session_cookie', '', time() - 3600, "/");
+    
+    // Eliminar la cookie del nombre de usuario
+    setcookie('username_cookie', '', time() - 3600, "/");
     header("Location: index.php?auth=0");
     exit();
 }
 
 function obtenerUsuarios() {
     global $conexion;
-    $sql = "SELECT username AS usuario FROM login";
+    $sql = "SELECT username, password, nombre, apellido, created_at FROM login";
     $result = $conexion->query($sql);
     $usuarios = array();
 
@@ -123,7 +132,7 @@ function obtenerUsuarios() {
 
 function obtenerCursos() {
     global $conexion;
-    $sql = "SELECT id, titulo, descripcion, instructor, duracion_horas, duracion_minutos, categoria, tipo, fecha_creacion FROM cursos";
+    $sql = "SELECT * FROM cursos";
     $result = $conexion->query($sql);
     $cursos = array();
 

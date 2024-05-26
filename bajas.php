@@ -35,6 +35,50 @@ $cursos = obtenerCursos();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bajas</title>
 </head>
+
+<style>
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1; 
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%; 
+    overflow: auto;
+    background-color: rgb(0,0,0); 
+    background-color: rgba(0,0,0,0.4);
+    padding-top: 60px; 
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto; 
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 800px; 
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.detalle-usuario {
+    text-align: center;
+}
+</style>
+
 <body>
 
 <div class="navbar" style="display: flex; justify-content: space-between;">
@@ -59,22 +103,29 @@ $cursos = obtenerCursos();
     <button onclick="mostrarModalCurso()">ELIMINAR CURSO</button>
 </div>
 
-<!-- Modulo para eliminar usuarios -->
+<!-- Modal para mostrar detalles de usuario -->
 <div id="modalUsuario" class="modal">
     <div class="modal-content">
         <span class="close" onclick="cerrarModalUsuario()">&times;</span>
-        <h2 class="modal-title">&nbsp;&nbsp;&nbsp;ELIMINAR USUARIO</h2>
+        <h2 class="modal-title">&nbsp;&nbsp;&nbsp;DETALLES DEL USUARIO</h2>
         <hr>
         <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-            <div class="eliminaruser" style="text-align: center;">
+            <div class="detalle-usuario" style="text-align: center;">
                 <br>
-                <label for="nomnre_usuario">USUARIO</label><br>
-                <select name="nombre_usuario" required>
+                <label for="nombre_usuario">USUARIO</label><br>
+                <select name="nombre_usuario" id="nombre_usuario" onchange="mostrarDetallesUsuario()" required>
                     <option value="">Selecciona un usuario</option>
                     <?php foreach ($usuarios as $usuario) {
-                        echo "<option value='{$usuario['usuario']}'>{$usuario['usuario']}</option>";
+                        echo "<option value='{$usuario['username']}' data-password='{$usuario['password']}' data-nombre='{$usuario['nombre']}' data-apellido='{$usuario['apellido']}' data-created_at='{$usuario['created_at']}'>{$usuario['username']}</option>";
                     } ?>
                 </select><br><br>
+                <div id="detalles_usuario" style="display:none;">
+                    <p><strong>Usuario:</strong> <span id="usuario"></span></p>
+                    <p><strong>Password:</strong> <span id="password"></span></p>
+                    <p><strong>Nombre:</strong> <span id="nombre"></span></p>
+                    <p><strong>Apellido:</strong> <span id="apellido"></span></p>
+                    <p><strong>Fecha de Creación:</strong> <span id="created_at"></span></p>
+                </div>
                 <button class="btn-dar-alta" type="submit" name="eliminar_usuario">ELIMINAR USUARIO</button>
             </div>
         </form>
@@ -125,6 +176,22 @@ function mostrarModalCurso() {
 
 function cerrarModalCurso() {
     document.getElementById('modalCurso').style.display = 'none';
+}
+
+function mostrarDetallesUsuario() {
+    var select = document.getElementById('nombre_usuario');
+    var selectedOption = select.options[select.selectedIndex];
+    
+    if (selectedOption.value) {
+        document.getElementById('usuario').innerText = selectedOption.value;
+        document.getElementById('password').innerText = selectedOption.getAttribute('data-password');
+        document.getElementById('nombre').innerText = selectedOption.getAttribute('data-nombre');
+        document.getElementById('apellido').innerText = selectedOption.getAttribute('data-apellido');
+        document.getElementById('created_at').innerText = selectedOption.getAttribute('data-created_at');
+        document.getElementById('detalles_usuario').style.display = 'block';
+    } else {
+        document.getElementById('detalles_usuario').style.display = 'none';
+    }
 }
 
 function mostrarDetallesCurso() {

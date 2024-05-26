@@ -15,12 +15,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['agregar_usuario'])) {
     // Obtener los datos del formulario
     $usuario = $_POST['usuario'];
     $password = $_POST['password'];
+    $nombre = $_POST['nombre'];
+    $apellido = $_POST['apellido'];
     $confirmar_password = $_POST['confirmar_password'];
 
     // Verificar si las contraseñas coinciden
     if ($password === $confirmar_password) {
         // Intentar agregar el usuario
-        $mensaje_usuario = agregarUsuario($usuario, $password); // Guardamos el mensaje de retorno
+        $mensaje_usuario = agregarUsuario($usuario, $password, $nombre, $apellido); // Guardamos el mensaje de retorno
     } else {
         $mensaje_usuario = "Las contraseñas no coinciden";
     }
@@ -84,11 +86,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['agregar_curso'])) {
             <div class="agregaruser" style="text-align: center;">
                 <br>
                 <label for="usuario">USUARIO</label><br>
-                <input type="text" name="usuario" required><br><br>
+                <input type="text" name="usuario" maxlength="50" required><br><br>
                 <label for="password">CONTRASEÑA</label><br>
-                <input type="password" name="password" required><br><br>
+                <input type="password" name="password" maxlength="60" required><br><br>
                 <label for="confirmar_password">REPETIR CONTRASEÑA</label><br>
                 <input type="password" name="confirmar_password" required><br><br>
+                <label for="nombre">NOMBRE</label><br>
+                <input type="text" name="nombre" maxlength="50" required><br><br>
+                <label for="apellido">APELLIDO</label><br>
+                <input type="text" name="apellido" maxlength="50" required><br><br>
                 <button class="btn-dar-alta" type="submit" name="agregar_usuario">AGREGAR USUARIO</button>
             </div>
         </form>
