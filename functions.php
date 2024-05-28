@@ -204,12 +204,12 @@ function actualizarUsuario($username, $nombre, $apellido, $password = null) {
     }
 }
 
-function actualizarCurso($id, $descripcion, $instructor, $duracion_horas, $duracion_minutos, $categoria, $tipo) {
+function actualizarCurso($id, $titulo, $descripcion, $instructor, $duracion_horas, $duracion_minutos, $categoria, $tipo) {
     global $conexion;
     try {
-        $sql = "UPDATE cursos SET descripcion = ?, instructor = ?, duracion_horas = ?, duracion_minutos = ?, categoria = ?, tipo = ? WHERE id = ?";
+        $sql = "UPDATE cursos SET titulo = ?, descripcion = ?, instructor = ?, duracion_horas = ?, duracion_minutos = ?, categoria = ?, tipo = ? WHERE id = ?";
         $stmt = $conexion->prepare($sql);
-        $stmt->bind_param("ssiissi", $descripcion, $instructor, $duracion_horas, $duracion_minutos, $categoria, $tipo, $id);
+        $stmt->bind_param("sssiissi", $titulo, $descripcion, $instructor, $duracion_horas, $duracion_minutos, $categoria, $tipo, $id);
         $stmt->execute();
         return "Curso actualizado exitosamente.";
     } catch (Exception $e) {

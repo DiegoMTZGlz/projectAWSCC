@@ -92,9 +92,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['agregar_curso'])) {
                 <label for="confirmar_password">REPETIR CONTRASEÑA</label><br>
                 <input type="password" name="confirmar_password" required><br><br>
                 <label for="nombre">NOMBRE</label><br>
-                <input type="text" name="nombre" maxlength="50" required><br><br>
+                <input type="text" name="nombre" maxlength="50" pattern="[A-Za-z ]+" title="Solo se permiten letras (A-Z, a-z) y espacios" required><br><br>
                 <label for="apellido">APELLIDO</label><br>
-                <input type="text" name="apellido" maxlength="50" required><br><br>
+                <input type="text" name="apellido" maxlength="50" pattern="[A-Za-z ]+" title="Solo se permiten letras (A-Z, a-z) y espacios" required><br><br>
                 <button class="btn-dar-alta" type="submit" name="agregar_usuario">AGREGAR USUARIO</button>
             </div>
         </form>
@@ -111,11 +111,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['agregar_curso'])) {
             <div class="agregarcurso" style="text-align: center;">
                 <br>
                 <label for="nombre_curso">CURSO</label><br>
-                <input type="text" name="nombre_curso" id="nombre_curso" maxlength="40" required><br><br>
+                <input type="text" name="nombre_curso" id="nombre_curso" maxlength="40" pattern="[A-Za-z ]+" title="Solo se permiten letras (A-Z, a-z) y espacios" required><br><br>
                 <label for="descripcion_curso">DESCRIPCIÓN</label><br>
                 <textarea name="descripcion_curso" rows="4" cols="50" required></textarea><br><br>
                 <label for="instructor_curso">INSTRUCTOR</label><br>
-                <input type="text" name="instructor_curso" maxlength="40" required pattern="[A-Za-z\s]+" title="Solo se permiten letras y espacios"><br><br>
+                <input type="text" name="instructor_curso" maxlength="40" required pattern="[A-Za-z ]+" title="Solo se permiten letras (A-Z, a-z) y espacios"><br><br>
                 <label for="categoria_curso">CATEGORÍA</label><br>
                 <select name="categoria_curso" required>
                     <option value="Programación">Programación</option>

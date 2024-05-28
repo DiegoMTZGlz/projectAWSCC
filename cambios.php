@@ -30,13 +30,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['actualizar_usuario']))
 // Verificar si se ha enviado el formulario de actualización de curso
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['actualizar_curso'])) {
     $id_curso = $_POST['id_curso'];
+    $titulo = $_POST['titulo'];
     $descripcion = $_POST['descripcion'];
     $instructor = $_POST['instructor'];
     $duracion_horas = $_POST['duracion_horas'];
     $duracion_minutos = $_POST['duracion_minutos'];
     $categoria = $_POST['categoria'];
     $tipo = $_POST['tipo'];
-    $mensaje_curso = actualizarCurso($id_curso, $descripcion, $instructor, $duracion_horas, $duracion_minutos, $categoria, $tipo);
+    $mensaje_curso = actualizarCurso($id_curso, $titulo, $descripcion, $instructor, $duracion_horas, $duracion_minutos, $categoria, $tipo);
     echo "<script>alert('$mensaje_curso');</script>";
 }
 
@@ -95,9 +96,9 @@ $cursos = obtenerCursos();
                 </select><br><br>
                 <div id="detalles_usuario" style="display:none;">
                     <label for="nombre">Nombre</label><br>
-                    <input type="text" id="nombre" name="nombre" required><br><br>
+                    <input type="text" id="nombre" name="nombre" pattern="[A-Za-z ]+" title="Solo se permiten letras (A-Z, a-z) y espacios" required><br><br>
                     <label for="apellido">Apellido</label><br>
-                    <input type="text" id="apellido" name="apellido" required><br><br>
+                    <input type="text" id="apellido" name="apellido" pattern="[A-Za-z ]+" title="Solo se permiten letras (A-Z, a-z) y espacios" required><br><br>
                     <label for="cambiar_password">Cambiar Contraseña</label>
                     <input type="checkbox" id="cambiar_password" name="cambiar_password" onchange="togglePasswordInput()"><br><br>
                     <div id="password_input" style="display: none;">
@@ -124,14 +125,16 @@ $cursos = obtenerCursos();
                 <select name="id_curso" id="id_curso" onchange="mostrarDetallesCurso()" required>
                     <option value="">Selecciona un curso</option>
                     <?php foreach ($cursos as $curso) {
-                        echo "<option value='{$curso['id']}' data-descripcion='{$curso['descripcion']}' data-instructor='{$curso['instructor']}' data-duracion_horas='{$curso['duracion_horas']}' data-duracion_minutos='{$curso['duracion_minutos']}' data-categoria='{$curso['categoria']}' data-tipo='{$curso['tipo']}'>{$curso['titulo']}</option>";
+                        echo "<option value='{$curso['id']}' data-titulo='{$curso['titulo']}' data-descripcion='{$curso['descripcion']}' data-instructor='{$curso['instructor']}' data-duracion_horas='{$curso['duracion_horas']}' data-duracion_minutos='{$curso['duracion_minutos']}' data-categoria='{$curso['categoria']}' data-tipo='{$curso['tipo']}'>{$curso['titulo']}</option>";
                     } ?>
                 </select><br><br>
                 <div id="detalles_curso" style="display:none;">
+                    <label for="titulo">TÍTULO DEL CURSO</label><br>
+                    <input type="text" id="titulo" name="titulo" pattern="[A-Za-z ]+" title="Solo se permiten letras (A-Z, a-z) y espacios" required><br><br>
                     <label for="descripcion">DESCRIPCIÓN</label><br>
                     <textarea id="descripcion" name="descripcion" rows="4" cols="50" required></textarea><br><br>
                     <label for="instructor">INSTRUCTOR</label><br>
-                    <input type="text" id="instructor" name="instructor" required><br><br>
+                    <input type="text" id="instructor" name="instructor" pattern="[A-Za-z ]+" title="Solo se permiten letras (A-Z, a-z) y espacios" required><br><br>
                     <label for="duracion_horas">DURACIÓN (Horas)</label><br>
                     <select id="duracion_horas" name="duracion_horas" required>
                         <?php
@@ -219,6 +222,7 @@ function mostrarDetallesCurso() {
     var selectedOption = select.options[select.selectedIndex];
     
     if (selectedOption.value) {
+        document.getElementById('titulo').value = selectedOption.getAttribute('data-titulo');
         document.getElementById('descripcion').value = selectedOption.getAttribute('data-descripcion');
         document.getElementById('instructor').value = selectedOption.getAttribute('data-instructor');
         document.getElementById('duracion_horas').value = selectedOption.getAttribute('data-duracion_horas');
